@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 📚 Digital Library Project | مشروع المكتبة الرقمية
 
 ## 📝 الوصف (Description)
@@ -70,3 +71,7 @@ digital-library-project/
 ## 🤖 ملاحظة (Note)
 تم تطوير هذا المشروع بمساعدة أدوات الذكاء الاصطناعي (AI) لتسريع عملية التعلم والبناء.
 This project was developed with the assistance of AI tools to accelerate learning and building.
+=======
+# Digital-Library
+A digital library project built with Flask and MySQL. مشروع مكتبة رقمية باستخدام Flask و MySQL.
+>>>>>>> cf06f2ecf9c53ffbecbe80e554a86a1b74520817
