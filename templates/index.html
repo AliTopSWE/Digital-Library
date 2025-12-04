@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Digital Library</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- شريط علوي -->
+    <div class="navbar">
+        <span class="menu-icon" onclick="toggleMenu()">☰</span>
+        <h2>📚 Digital Library</h2>
+    </div>
+
+    <!-- القائمة الجانبية -->
+    <div id="sideMenu" class="side-menu">
+        <a href="javascript:void(0)" class="closebtn" onclick="toggleMenu()">✖</a>
+        <a href="/index">🏠 Home</a>
+        <a href="/history">📜 Download History</a>
+        <a href="/profile">👤 Profile</a>
+        <!-- رابط Add Book يظهر فقط للأدمن -->
+        <a id="adminLink" href="/admin" style="display:none;">➕ Add Book</a>
+        <a href="/api/logout">🚪 Logout</a>
+    </div>
+
+    <!-- شريط البحث + فلتر التصنيفات -->
+    <div style="text-align:center; margin:20px 0;">
+        <input id="search" placeholder="🔍 Search by title, author, or category" 
+               onkeyup="searchBooks()" 
+               style="width:50%; padding:10px; border-radius:5px; border:1px solid #ccc;">
+
+        <select id="categoryFilter" onchange="filterByCategory()" 
+                style="padding:10px; border-radius:5px; border:1px solid #ccc; margin-left:10px;">
+            <option value="all">All Categories</option>
+        </select>
+    </div>
+
+    <!-- عرض الكتب -->
+    <div id="books"></div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

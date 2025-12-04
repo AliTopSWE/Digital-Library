@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel - Digital Library</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- شريط علوي -->
+    <div class="navbar">
+        <span class="menu-icon" onclick="toggleMenu()">☰</span>
+        <h2>⚙️ Admin Panel</h2>
+    </div>
+
+    <!-- القائمة الجانبية -->
+    <div id="sideMenu" class="side-menu">
+        <a href="javascript:void(0)" class="closebtn" onclick="toggleMenu()">✖</a>
+        <a href="/index">🏠 Home</a>
+        <a href="/history">📜 Download History</a>
+        <a href="/profile">👤 Profile</a>
+        <!-- رابط Add Book يظهر فقط للأدمن -->
+        <a id="adminLink" href="/admin" style="display:none;">➕ Add Book</a>
+        <a href="/api/logout">🚪 Logout</a>
+    </div>
+
+    <!-- محتوى الصفحة -->
+    <div class="admin-box">
+        <h3>Add New Book</h3>
+        <form id="addBookForm" enctype="multipart/form-data">
+            <input type="text" name="title" placeholder="Book Title" required>
+            <input type="text" name="author" placeholder="Author" required>
+
+            <!-- قائمة التصنيفات من قاعدة البيانات -->
+            <select name="category_id" id="categorySelect" required></select>
+
+            <input type="file" name="file" required>
+            <input type="file" name="cover" required>
+            <button type="submit">Add Book</button>
+        </form>
+        <p id="result"></p>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        async function loadCategories() {
+            let res = await fetch("/api/categories");
+            let cats = await res.json();
+            let select = document.getElementById("categorySelect");
+            select.innerHTML = "";
+            cats.forEach(c => {
+                select.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+            });
+        }
+        loadCategories();
+    </script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- شريط علوي -->
+    <div class="navbar">
+        <span class="menu-icon" onclick="toggleMenu()">☰</span>
+        <h2>👤 Profile</h2>
+    </div>
+
+    <!-- القائمة الجانبية -->
+    <div id="sideMenu" class="side-menu">
+        <a href="javascript:void(0)" class="closebtn" onclick="toggleMenu()">✖</a>
+        <a href="/index">🏠 Home</a>
+        <a href="/history">📜 Download History</a>
+        <a href="/profile">👤 Profile</a>
+        <!-- رابط Add Book يظهر فقط للأدمن -->
+        <a id="adminLink" href="/admin" style="display:none;">➕ Add Book</a>
+        <a href="/api/logout">🚪 Logout</a>
+    </div>
+
+    <!-- محتوى الصفحة -->
+    <div class="content-box">
+        <h3>Your Account</h3>
+        <div id="profile"></div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        loadProfile();
+    </script>
+</body>
+</html>
