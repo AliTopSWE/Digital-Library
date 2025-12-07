@@ -1,31 +1,86 @@
+<!-- templates/login.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Login - Digital Library</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta charset="utf-8">
+  <title>Login — Digital Library</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    /* small page-specific tweaks already compatible with style.css */
+    .login-wrapper{width:100%;max-width:920px;margin:28px auto;display:flex;gap:28px;align-items:center;justify-content:center;padding:0 12px}
+    .login-hero{flex:1;background:linear-gradient(135deg,#1976d2,#1e88e5);color:#fff;padding:36px;border-radius:14px;box-shadow:0 12px 40px rgba(16,24,40,0.08)}
+    .login-card{flex:1;background:var(--card);padding:28px;border-radius:14px;box-shadow:0 12px 40px rgba(16,24,40,0.06)}
+    .login-card h2{margin:0 0 12px}
+    .login-card input{width:100%;padding:14px 16px;border-radius:12px;border:1px solid #e6e6e6;margin-top:10px;font-size:16px;height:48px}
+    .login-card .btn{padding:12px 18px;font-size:16px;border-radius:12px;margin-top:12px}
+    .create-block{margin-top:18px;padding-top:12px;border-top:1px solid #f0f6f8}
+    @media (max-width:900px){ .login-wrapper{flex-direction:column} }
+  </style>
 </head>
 <body>
-    <!-- شريط علوي -->
-    <div class="navbar">
-        <h2>🔑 Digital Library Login</h2>
+  <div class="login-wrapper">
+    <div class="login-hero">
+      <h1 style="margin:0 0 8px">Welcome to Digital Library</h1>
+      <p style="margin:0;color:rgba(255,255,255,0.92)">Upload and share books easily. Sign in to access downloads, history, and admin panel if you have permissions.</p>
     </div>
 
-    <!-- صندوق تسجيل الدخول -->
-    <div class="login-box">
-        <h2>Login</h2>
-        <input id="username" placeholder="Username">
-        <input id="password" type="password" placeholder="Password">
-        <button onclick="login()">Login</button>
-        <p id="msg"></p>
+    <div class="login-card">
+      <h2>Sign in</h2>
+      <input id="username" placeholder="Username" autocomplete="username">
+      <input id="password" type="password" placeholder="Password" autocomplete="current-password">
+      <div>
+        <button class="btn" onclick="login()">Sign in</button>
+      </div>
 
-        <h3>Register New User</h3>
-        <input id="newUsername" placeholder="New Username">
-        <input id="newPassword" type="password" placeholder="New Password">
-        <button onclick="register()">Register</button>
-        <p id="regMsg"></p>
+      <div class="create-block">
+        <h3 style="margin:0 0 8px">Create account</h3>
+        <input id="newUsername" placeholder="New Username" style="margin-top:8px">
+        <input id="newPassword" type="password" placeholder="New Password" style="margin-top:8px">
+        <div style="margin-top:10px">
+          <button class="btn btn-secondary" onclick="register()">Create account</button>
+        </div>
+      </div>
+
+      <p style="margin-top:12px;color:var(--muted);font-size:13px">By continuing you agree to the Terms of Service and Privacy Policy.</p>
     </div>
+  </div>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script>
+    async function login() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value;
+      if (!username || !password) { showCenterMessage("Please enter username and password", "error"); return; }
+      try {
+        const res = await fetch("/api/login", {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({username, password})
+        });
+        const data = await res.json();
+        if (data.success) {
+          showCenterMessage("Login successful!", "success");
+          setTimeout(()=> { window.location.href = data.role === "admin" ? "/admin" : "/index"; }, 700);
+        } else showCenterMessage(data.message || "Wrong username or password", "error");
+      } catch (e) { console.error(e); showCenterMessage("Login error", "error"); }
+    }
+
+    async function register() {
+      const username = document.getElementById("newUsername").value.trim();
+      const password = document.getElementById("newPassword").value;
+      if (!username || !password) { showCenterMessage("Please fill registration fields", "error"); return; }
+      try {
+        const res = await fetch("/api/register", {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({username, password})
+        });
+        const data = await res.json();
+        if (data.success) showCenterMessage("User registered successfully!", "success");
+        else showCenterMessage(data.message || "Registration failed", "error");
+      } catch (e) { console.error(e); showCenterMessage("Registration error", "error"); }
+    }
+  </script>
 </body>
 </html>

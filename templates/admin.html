@@ -1,57 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Admin Panel - Digital Library</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta charset="utf-8">
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <!-- شريط علوي -->
-    <div class="navbar">
-        <span class="menu-icon" onclick="toggleMenu()">☰</span>
-        <h2>⚙️ Admin Panel</h2>
-    </div>
+  <div class="navbar"><span class="menu-icon" onclick="toggleMenu()">☰</span><h2>⚙️ Admin Panel</h2></div>
 
-    <!-- القائمة الجانبية -->
-    <div id="sideMenu" class="side-menu">
-        <a href="javascript:void(0)" class="closebtn" onclick="toggleMenu()">✖</a>
-        <a href="/index">🏠 Home</a>
-        <a href="/history">📜 Download History</a>
-        <a href="/profile">👤 Profile</a>
-        <!-- رابط Add Book يظهر فقط للأدمن -->
-        <a id="adminLink" href="/admin" style="display:none;">➕ Add Book</a>
-        <a href="/api/logout">🚪 Logout</a>
-    </div>
+  <div id="sideMenu" class="side-menu">
+    <a href="javascript:void(0)" class="closebtn" onclick="toggleMenu()">✖</a>
+    <a href="/index">Home</a>
+    <a href="/history">Download History</a>
+    <a href="/profile">Profile</a>
+    <a id="adminLink" href="/admin" style="display:none;">Admin Panel</a>
+    <a href="/api/logout">Logout</a>
+  </div>
 
-    <!-- محتوى الصفحة -->
+  <div class="container">
     <div class="admin-box">
-        <h3>Add New Book</h3>
-        <form id="addBookForm" enctype="multipart/form-data">
+      <h3>Add new book</h3>
+      <form id="addBookForm" enctype="multipart/form-data">
+        <div class="add-form-row">
+          <div class="field">
             <input type="text" name="title" placeholder="Book Title" required>
+          </div>
+          <div class="field">
             <input type="text" name="author" placeholder="Author" required>
+          </div>
+        </div>
 
-            <!-- قائمة التصنيفات من قاعدة البيانات -->
-            <select name="category_id" id="categorySelect" required></select>
-
+        <div class="add-form-row">
+          <div class="field">
+            <select name="category_id" id="categorySelect" required>
+              <!-- categories injected -->
+            </select>
+          </div>
+          <div class="field file-field">
             <input type="file" name="file" required>
+          </div>
+        </div>
+
+        <div class="add-form-row">
+          <div class="field file-field">
             <input type="file" name="cover" required>
-            <button type="submit">Add Book</button>
-        </form>
-        <p id="result"></p>
+          </div>
+          <div class="field add-actions">
+            <button type="submit" class="btn">Add Book</button>
+            <button type="reset" class="btn-secondary">Reset</button>
+          </div>
+        </div>
+      </form>
     </div>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
-    <script>
-        async function loadCategories() {
-            let res = await fetch("/api/categories");
-            let cats = await res.json();
-            let select = document.getElementById("categorySelect");
-            select.innerHTML = "";
-            cats.forEach(c => {
-                select.innerHTML += `<option value="${c.id}">${c.name}</option>`;
-            });
-        }
-        loadCategories();
-    </script>
+    <div class="admin-box">
+      <h3>Search books</h3>
+      <input id="adminSearch" placeholder="Search" onkeyup="adminSearchBooks()" class="input-wide">
+    </div>
+
+    <div class="admin-box">
+      <h3>Manage books</h3>
+      <div id="adminBooks"></div>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script>
+    (async () => {
+      try {
+        const res = await fetch("/api/categories");
+        const cats = await res.json();
+        const select = document.getElementById("categorySelect");
+        select.innerHTML = "";
+        cats.forEach(c => select.innerHTML += `<option value="${c.id}">${c.name}</option>`);
+      } catch (e) { console.error(e); }
+    })();
+  </script>
 </body>
 </html>
